@@ -1,4 +1,4 @@
-# .NET NHhibernate app
+# .NET app with NHibernate
 Test console application to work NHibernate framework with PostgreSQL db.
 
 1) DBScript.sql should be run in PostgreSQL database to create new database and import data;<br/>
