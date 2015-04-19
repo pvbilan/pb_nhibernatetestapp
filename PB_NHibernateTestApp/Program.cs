@@ -27,6 +27,7 @@ namespace PT_NHibernateTestApp
                 Console.WriteLine("3: Insert a new department");
                 Console.WriteLine("4: Insert a new duty");
                 Console.WriteLine("5: Update the department");
+                Console.WriteLine("6: Get departments count of companies");
                 Console.WriteLine("exit: exit from the application.");
                 Console.Write("Enter input: ");
                 String line = Console.ReadLine();
@@ -43,6 +44,7 @@ namespace PT_NHibernateTestApp
                     case "3": CreateNewDepartment(); break;
                     case "4": CreateNewDuty(); break;
                     case "5": UpdateDepartment(); break;
+                    case "6": GetDepartmentsCountOfCompanies(); break;
                     default: break;
                 }
             }
@@ -152,6 +154,20 @@ namespace PT_NHibernateTestApp
 
             Int32? departmentId = departmentService.SaveOrUpdateDepartment(updatedDepartment);
             Console.WriteLine(String.Format("Result of update department = {0}", departmentId.HasValue.ToString()));
+        }
+
+        static void GetDepartmentsCountOfCompanies()
+        {
+            List<CompanyDepartmentsCountView> companyDepartmentsCountList = companyService.GetCompanyDepartmentsCount();
+
+            if (companyDepartmentsCountList != null && companyDepartmentsCountList.Count() > 0)
+            {
+                foreach (CompanyDepartmentsCountView companyDepartmentsCount in companyDepartmentsCountList)
+                {
+                    Console.WriteLine(String.Format("Company: Id={0}, Name={1}, DepartmentsCount: {2}.", companyDepartmentsCount.CompanyId, companyDepartmentsCount.CompanyName, companyDepartmentsCount.DepartmentsCount));
+                }
+                Console.WriteLine();
+            }
         }
     }
 }

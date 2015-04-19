@@ -61,6 +61,7 @@
     <Compile Include="PostgreSqlModel\Mapping\DutyMapping.cs" />
     <Compile Include="PostgreSqlModel\Models\Company.cs" />
     <Compile Include="PostgreSqlModel\Models\CompanyDepartment.cs" />
+    <Compile Include="PostgreSqlModel\Models\CompanyDepartmentsCountView.cs" />
     <Compile Include="PostgreSqlModel\Models\Department.cs" />
     <Compile Include="PostgreSqlModel\Models\Duty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
