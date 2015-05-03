@@ -28,6 +28,7 @@ namespace PT_NHibernateTestApp
                 Console.WriteLine("4: Insert a new duty");
                 Console.WriteLine("5: Update the department");
                 Console.WriteLine("6: Get departments count of companies");
+                Console.WriteLine("7: Get companies, which departments count greater than 2 (future materializing results)");
                 Console.WriteLine("exit: exit from the application.");
                 Console.Write("Enter input: ");
                 String line = Console.ReadLine();
@@ -45,6 +46,7 @@ namespace PT_NHibernateTestApp
                     case "4": CreateNewDuty(); break;
                     case "5": UpdateDepartment(); break;
                     case "6": GetDepartmentsCountOfCompanies(); break;
+                    case "7": GetCompaniesWhichDepartmentsCountGT2(); break;
                     default: break;
                 }
             }
@@ -158,11 +160,25 @@ namespace PT_NHibernateTestApp
 
         static void GetDepartmentsCountOfCompanies()
         {
-            List<CompanyDepartmentsCountView> companyDepartmentsCountList = companyService.GetCompanyDepartmentsCount();
+            List<CompanyDepartmentsCountDTO> companyDepartmentsCountList = companyService.GetCompanyDepartmentsCount();
 
             if (companyDepartmentsCountList != null && companyDepartmentsCountList.Count() > 0)
             {
-                foreach (CompanyDepartmentsCountView companyDepartmentsCount in companyDepartmentsCountList)
+                foreach (CompanyDepartmentsCountDTO companyDepartmentsCount in companyDepartmentsCountList)
+                {
+                    Console.WriteLine(String.Format("Company: Id={0}, Name={1}, DepartmentsCount: {2}.", companyDepartmentsCount.CompanyId, companyDepartmentsCount.CompanyName, companyDepartmentsCount.DepartmentsCount));
+                }
+                Console.WriteLine();
+            }
+        }
+
+        static void GetCompaniesWhichDepartmentsCountGT2()
+        {
+            List<CompanyDepartmentsCountDTO> companyDepartmentsCountList = companyService.GetCompaniesWhichDepartmentsCountGT2();
+
+            if (companyDepartmentsCountList != null && companyDepartmentsCountList.Count() > 0)
+            {
+                foreach (CompanyDepartmentsCountDTO companyDepartmentsCount in companyDepartmentsCountList)
                 {
                     Console.WriteLine(String.Format("Company: Id={0}, Name={1}, DepartmentsCount: {2}.", companyDepartmentsCount.CompanyId, companyDepartmentsCount.CompanyName, companyDepartmentsCount.DepartmentsCount));
                 }

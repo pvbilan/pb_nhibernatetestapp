@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NHibernateTestApp.DAL.PostgreSqlModel.Models
 {
-    public class CompanyDepartmentsCountView
+    public class CompanyDepartmentsCountDTO
     {
         public Int32 CompanyId { get; set; }
         public String CompanyName { get; set; }

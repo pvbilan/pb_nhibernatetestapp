@@ -69,27 +69,55 @@ namespace NHibernateTestApp.BLL.Services
             }
         }
 
-        public List<CompanyDepartmentsCountView> GetCompanyDepartmentsCount()
+        public List<CompanyDepartmentsCountDTO> GetCompanyDepartmentsCount()
         {
             using (ISession session = PostgreSqlManager.OpenSession())
             {
-                List<CompanyDepartmentsCountView> companyDepartmentsCountList = new List<CompanyDepartmentsCountView>();
+                List<CompanyDepartmentsCountDTO> companyDepartmentsCountList = new List<CompanyDepartmentsCountDTO>();
                 Company companyAlias = null;
                 CompanyDepartment companyDepartmentAlias = null;
-                CompanyDepartmentsCountView companyDepartmentsCountViewAlias = null;
+                CompanyDepartmentsCountDTO companyDepartmentsCountDTO = null;
 
                 companyDepartmentsCountList = session.QueryOver<Company>(() => companyAlias)
                                                      .JoinAlias(() => companyAlias.CompanyDepartments, () => companyDepartmentAlias)
                                                      .SelectList(list => list
-                                                         .SelectGroup(() => companyAlias.Id).WithAlias(() => companyDepartmentsCountViewAlias.CompanyId)
-                                                         .Select(() => companyAlias.Name).WithAlias(() => companyDepartmentsCountViewAlias.CompanyName)
-                                                         .Select(Projections.Count(() => companyDepartmentAlias.Id).WithAlias(() => companyDepartmentsCountViewAlias.DepartmentsCount)))
-                                                     .TransformUsing(Transformers.AliasToBean<CompanyDepartmentsCountView>())
-                                                     .List<CompanyDepartmentsCountView>()
+                                                         .SelectGroup(() => companyAlias.Id).WithAlias(() => companyDepartmentsCountDTO.CompanyId)
+                                                         .Select(() => companyAlias.Name).WithAlias(() => companyDepartmentsCountDTO.CompanyName)
+                                                         .SelectCount(() => companyDepartmentAlias.Id).WithAlias(() => companyDepartmentsCountDTO.DepartmentsCount))
+                                                     .TransformUsing(Transformers.AliasToBean<CompanyDepartmentsCountDTO>())
+                                                     .List<CompanyDepartmentsCountDTO>()
                                                      .ToList();
 
-
                 return companyDepartmentsCountList;
+            }
+        }
+
+        public List<CompanyDepartmentsCountDTO> GetCompaniesWhichDepartmentsCountGT2()
+        {
+            using (ISession session = PostgreSqlManager.OpenSession())
+            {
+                IEnumerable<CompanyDepartmentsCountDTO> companyDepartmentsCountList = null;
+                Company companyAlias = null;
+                CompanyDepartment companyDepartmentAlias = null;
+                CompanyDepartmentsCountDTO companyDepartmentsCountDTO = null;
+
+                // Batch the two queries together
+                IFutureValue<Int32> companiesCount = session.QueryOver<Company>().SelectList(list => list.SelectCount(c => c.Id)).FutureValue<Int32>();
+
+                companyDepartmentsCountList = session.QueryOver<Company>(() => companyAlias)
+                                                     .JoinAlias(() => companyAlias.CompanyDepartments, () => companyDepartmentAlias)
+                                                     .SelectList(list => list
+                                                         .SelectGroup(() => companyAlias.Id).WithAlias(() => companyDepartmentsCountDTO.CompanyId)
+                                                         .Select(() => companyAlias.Name).WithAlias(() => companyDepartmentsCountDTO.CompanyName)
+                                                         .SelectCount(() => companyDepartmentAlias.Id).WithAlias(() => companyDepartmentsCountDTO.DepartmentsCount))
+                                                     .Where(Restrictions.Gt(Projections.Count(Projections.Property(() => companyDepartmentAlias.Id)), 2))
+                                                     .TransformUsing(Transformers.AliasToBean<CompanyDepartmentsCountDTO>())
+                                                     .Future<CompanyDepartmentsCountDTO>();
+                
+                // Access the "Value" property of IFutureValue, which will execute both queries in one round-trip
+                Console.WriteLine(String.Format("Companies count = {0}", companiesCount.Value));
+
+                return companyDepartmentsCountList.ToList();
             }
         }
     }
