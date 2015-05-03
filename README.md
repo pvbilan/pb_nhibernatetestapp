@@ -10,4 +10,5 @@ Console application shows the following opportunities work NHibernate framework 
 3. Insert a new department (with duties list) - many-to-many relationship;<br/>
 4. Insert a new duty (with department list) - many-to-many relationship;<br/>
 5. Update the department (and adding new duty) - many-to-many relationship;<br/>
-6. Get departments count of companies - group by and count.<br/>
+6. Get departments count of companies - group by and count;<br/>
+7. Get companies, which departments count greater than 2 - group by with conditions, NHiberante Future opportunities.<br/>
